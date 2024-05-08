@@ -40,6 +40,8 @@ func NewPlantRepository(session db.Session) PlantRepository {
 
 func (r plantRepository) Save(p domain.Plant) (domain.Plant, error) {
 	pl := r.mapDomainToModel(p)
+	pl.CreatedDate = time.Now()
+	pl.UpdatedDate = time.Now()
 	err := r.coll.InsertReturning(&pl)
 	if err != nil {
 		return domain.Plant{}, err

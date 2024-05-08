@@ -7,6 +7,7 @@ import (
 	"github.com/BohdanBoriak/boilerplate-go-back/internal/app"
 	"github.com/BohdanBoriak/boilerplate-go-back/internal/domain"
 	"github.com/BohdanBoriak/boilerplate-go-back/internal/infra/http/requests"
+	"github.com/BohdanBoriak/boilerplate-go-back/internal/infra/http/resources"
 )
 
 type PlantController struct {
@@ -36,5 +37,8 @@ func (c PlantController) Save() http.HandlerFunc {
 			InternalServerError(w, err)
 			return
 		}
+
+		var plantDto resources.PlantDto
+		Created(w, plantDto.DomainToDto(plant))
 	}
 }
