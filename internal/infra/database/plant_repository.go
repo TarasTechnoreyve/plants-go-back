@@ -24,6 +24,7 @@ type plant struct {
 
 type PlantRepository interface {
 	Save(p domain.Plant) (domain.Plant, error)
+	GetForUser(uId uint64) ([]domain.Plant, error)
 }
 
 type plantRepository struct {
@@ -48,6 +49,20 @@ func (r plantRepository) Save(p domain.Plant) (domain.Plant, error) {
 	}
 	p = r.mapModelToDomain(pl)
 	return p, err
+}
+
+func (r plantRepository) GetForUser(uId uint64) ([]domain.Plant, error) {
+	var plants []plant
+	err := r.coll.
+		Find(db.Cond{"user_id": uId, "deleted_date": nil}).
+		OrderBy("-updated_date").
+		All(&plants)
+	if err != nil {
+		return nil, err
+	}
+
+	result := r.mapModelToDomainCollection(plants)
+	return result, nil
 }
 
 func (r plantRepository) mapDomainToModel(p domain.Plant) plant {
@@ -78,4 +93,12 @@ func (r plantRepository) mapModelToDomain(p plant) domain.Plant {
 		UpdatedDate: p.UpdatedDate,
 		DeletedDate: p.DeletedDate,
 	}
+}
+
+func (r plantRepository) mapModelToDomainCollection(plants []plant) []domain.Plant {
+	var ps []domain.Plant
+	for _, p := range plants {
+		ps = append(ps, r.mapModelToDomain(p))
+	}
+	return ps
 }
