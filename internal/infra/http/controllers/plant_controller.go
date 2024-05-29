@@ -42,3 +42,19 @@ func (c PlantController) Save() http.HandlerFunc {
 		Created(w, plantDto.DomainToDto(plant))
 	}
 }
+
+func (c PlantController) GetForUser() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		user := r.Context().Value(UserKey).(domain.User)
+
+		plants, err := c.plantService.GetForUser(user.Id)
+		if err != nil {
+			log.Printf("PlantController -> GetForUser: %s", err)
+			InternalServerError(w, err)
+			return
+		}
+
+		//todo: add plants response
+		Success(w, plants)
+	}
+}
