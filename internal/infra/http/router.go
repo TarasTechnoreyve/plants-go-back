@@ -104,10 +104,8 @@ func UserRouter(r chi.Router, uc controllers.UserController) {
 
 func PlantRouter(r chi.Router, pc controllers.PlantController) {
 	r.Route("/plants", func(apiRouter chi.Router) {
-		apiRouter.Post(
-			"/",
-			pc.Save(),
-		)
+		apiRouter.Post("/", pc.Save())
+		apiRouter.Get("/", pc.GetForUser())
 	})
 }
 

@@ -54,7 +54,8 @@ func (c PlantController) GetForUser() http.HandlerFunc {
 			return
 		}
 
-		//todo: add plants response
-		Success(w, plants)
+		var plantsDto resources.PlantsDto
+		plantsDto = plantsDto.DomainToDtoCollection(plants)
+		Success(w, plantsDto)
 	}
 }

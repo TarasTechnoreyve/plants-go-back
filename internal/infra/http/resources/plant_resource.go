@@ -12,6 +12,10 @@ type PlantDto struct {
 	Type    domain.PlantType `json:"type"`
 }
 
+type PlantsDto struct {
+	Plants []PlantDto `json:"plants"`
+}
+
 func (d PlantDto) DomainToDto(plant domain.Plant) PlantDto {
 	return PlantDto{
 		Id:      plant.Id,
@@ -22,4 +26,13 @@ func (d PlantDto) DomainToDto(plant domain.Plant) PlantDto {
 		Lon:     plant.Lon,
 		Type:    plant.Type,
 	}
+}
+
+func (d PlantsDto) DomainToDtoCollection(ps []domain.Plant) PlantsDto {
+	var plants []PlantDto
+	for _, p := range ps {
+		pDto := PlantDto{}.DomainToDto(p)
+		plants = append(plants, pDto)
+	}
+	return PlantsDto{Plants: plants}
 }
