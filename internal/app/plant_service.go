@@ -10,6 +10,7 @@ import (
 type PlantService interface {
 	Save(p domain.Plant) (domain.Plant, error)
 	GetForUser(uId uint64) ([]domain.Plant, error)
+	Find(id uint64) (interface{}, error)
 }
 
 type plantService struct {
@@ -38,4 +39,13 @@ func (s plantService) GetForUser(uId uint64) ([]domain.Plant, error) {
 		return nil, err
 	}
 	return plants, nil
+}
+
+func (s plantService) Find(id uint64) (interface{}, error) {
+	plant, err := s.plantRepo.GetById(id)
+	if err != nil {
+		log.Printf("PlantService -> Find: %s", err)
+		return domain.Plant{}, err
+	}
+	return plant, nil
 }

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"log"
 	"net/http"
 
@@ -57,5 +58,21 @@ func (c PlantController) GetForUser() http.HandlerFunc {
 		var plantsDto resources.PlantsDto
 		plantsDto = plantsDto.DomainToDtoCollection(plants)
 		Success(w, plantsDto)
+	}
+}
+
+func (c PlantController) GetById() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		user := r.Context().Value(UserKey).(domain.User)
+		plant := r.Context().Value(PlantKey).(domain.Plant)
+
+		if user.Id != plant.UserId {
+			err := errors.New("access denied")
+			Forbidden(w, err)
+			return
+		}
+
+		var plantDto resources.PlantDto
+		Success(w, plantDto.DomainToDto(plant))
 	}
 }

@@ -25,6 +25,7 @@ type plant struct {
 type PlantRepository interface {
 	Save(p domain.Plant) (domain.Plant, error)
 	GetForUser(uId uint64) ([]domain.Plant, error)
+	GetById(id uint64) (domain.Plant, error)
 }
 
 type plantRepository struct {
@@ -62,6 +63,19 @@ func (r plantRepository) GetForUser(uId uint64) ([]domain.Plant, error) {
 	}
 
 	result := r.mapModelToDomainCollection(plants)
+	return result, nil
+}
+
+func (r plantRepository) GetById(id uint64) (domain.Plant, error) {
+	var pl plant
+	err := r.coll.
+		Find(db.Cond{"id": id, "deleted_date": nil}).
+		One(&pl)
+	if err != nil {
+		return domain.Plant{}, err
+	}
+
+	result := r.mapModelToDomain(pl)
 	return result, nil
 }
 
