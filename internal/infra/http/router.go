@@ -110,6 +110,8 @@ func PlantRouter(r chi.Router, pc controllers.PlantController, ps app.PlantServi
 		apiRouter.Post("/", pc.Save())
 		apiRouter.Get("/", pc.GetForUser())
 		apiRouter.With(ppom).Get("/{plantId}", pc.GetById())
+		apiRouter.With(ppom).Put("/{plantId}", pc.Update())
+		apiRouter.With(ppom).Delete("/{plantId}", pc.Delete())
 	})
 }
 
